@@ -25,6 +25,9 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
+      - name: Verificar qualidade do código
+        run: npm run lint
+
       - name: Compilar frontend
         run: npm run build
 

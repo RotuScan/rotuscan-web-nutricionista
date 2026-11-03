@@ -39,14 +39,15 @@ export async function api<T>(
       headers,
     });
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
-      throw error;
-    }
-
-    throw new Error(
-      "Não foi possível conectar ao servidor. Verifique sua conexão."
-    );
+  if (error instanceof Error && error.name === "AbortError") {
+    throw error;
   }
+
+  throw new Error(
+    "Não foi possível conectar ao servidor. Verifique sua conexão.",
+    { cause: error }
+  );
+}
 
   let dados: unknown = {};
 

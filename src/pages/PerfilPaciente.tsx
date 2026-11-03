@@ -126,6 +126,10 @@ function obterResultado(scan: ScanPaciente) {
 export default function PerfilPaciente() {
   const { id } = useParams<{ id: string }>();
 
+  return <ConteudoPerfilPaciente key={id ?? "sem-id"} id={id} />;
+}
+
+function ConteudoPerfilPaciente({ id }: { id?: string }) {
   const [dados, setDados] =
     useState<DetalhesPaciente | null>(null);
 
@@ -138,46 +142,40 @@ export default function PerfilPaciente() {
   const modalRef = useRef<HTMLDivElement>(null);
   const botaoAnteriorRef = useRef<HTMLElement | null>(null);
 
-  useEffect(() => {
-    let ativo = true;
 
-    setDados(null);
-    setErro("");
-    setCarregando(true);
-    setScanSelecionado(null);
 
-    if (!id) {
-      setErro("Paciente não informado.");
+useEffect(() => {
+  let ativo = true;
+
+  if (!id) {
+    return;
+  }
+
+  buscarPacientePorId(id)
+    .then((resposta) => {
+      if (!ativo) return;
+
+      setDados(resposta);
+      setErro("");
       setCarregando(false);
-      return;
-    }
+    })
+    .catch((error) => {
+      if (!ativo) return;
 
-    buscarPacientePorId(id)
-      .then((resposta) => {
-        if (!ativo) return;
+      setErro(
+        error instanceof Error
+          ? error.message
+          : "Erro ao carregar paciente."
+      );
+      setCarregando(false);
+    });
 
-        setDados(resposta);
-        setErro("");
-      })
-      .catch((error) => {
-        if (!ativo) return;
+  return () => {
+    ativo = false;
+  };
+}, [id]);
 
-        setErro(
-          error instanceof Error
-            ? error.message
-            : "Erro ao carregar paciente."
-        );
-      })
-      .finally(() => {
-        if (ativo) {
-          setCarregando(false);
-        }
-      });
 
-    return () => {
-      ativo = false;
-    };
-  }, [id]);
 
   useEffect(() => {
     if (!scanSelecionado) return;
