@@ -10,15 +10,17 @@ import {
   type Paciente,
 } from "../services/pacienteService";
 
-function formatarRestricoes(restricoes: unknown[]): string {
-  if (!Array.isArray(restricoes) || restricoes.length === 0) {
-    return "Não informada";
+type Ordem = "asc" | "desc";
+
+function obterNomesRestricoes(restricoes: unknown): string[] {
+  if (!Array.isArray(restricoes)) {
+    return [];
   }
 
   return restricoes
-    .map((restricao) => {
+    .map((restricao): string | null => {
       if (typeof restricao === "string") {
-        return restricao;
+        return restricao.trim();
       }
 
       if (
@@ -27,40 +29,71 @@ function formatarRestricoes(restricoes: unknown[]): string {
         "nome" in restricao &&
         typeof restricao.nome === "string"
       ) {
-        return restricao.nome;
+        return restricao.nome.trim();
       }
 
-      return "Restrição cadastrada";
+      return null;
     })
-    .join(", ");
+    .filter(
+      (nome): nome is string =>
+        nome !== null && nome.length > 0
+    );
+}
+
+function formatarRestricoes(restricoes: unknown): string {
+  const nomes = obterNomesRestricoes(restricoes);
+
+  return nomes.length > 0
+    ? nomes.join(", ")
+    : "Não informada";
+}
+
+function normalizarTexto(texto: string): string {
+  return texto
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("pt-BR")
+    .trim();
 }
 
 export default function Pacientes() {
   const [busca, setBusca] = useState("");
-  const [ordem, setOrdem] = useState<"asc" | "desc">("asc");
-
+  const [ordem, setOrdem] = useState<Ordem>("asc");
   const [lista, setLista] = useState<Paciente[]>([]);
+
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
+
+  const [filtroRestricao, setFiltroRestricao] =
+    useState("todas");
+
+  const [pagina, setPagina] = useState(1);
+
+  const itensPorPagina = 10;
 
   useEffect(() => {
     let ativo = true;
 
     buscarPacientes()
       .then((pacientes) => {
-        if (ativo) setLista(pacientes);
+        if (!ativo) return;
+
+        setLista(pacientes);
+        setErro("");
       })
       .catch((error) => {
-        if (ativo) {
-          setErro(
-            error instanceof Error
-              ? error.message
-              : "Erro ao carregar pacientes."
-          );
-        }
+        if (!ativo) return;
+
+        setErro(
+          error instanceof Error
+            ? error.message
+            : "Erro ao carregar pacientes."
+        );
       })
       .finally(() => {
-        if (ativo) setCarregando(false);
+        if (ativo) {
+          setCarregando(false);
+        }
       });
 
     return () => {
@@ -68,24 +101,87 @@ export default function Pacientes() {
     };
   }, []);
 
+  const restricoesDisponiveis = useMemo(() => {
+    const restricoes = lista.flatMap((paciente) =>
+      obterNomesRestricoes(paciente.restricoes)
+    );
+
+    const unicas = new Map<string, string>();
+
+    restricoes.forEach((restricao) => {
+      const chave = normalizarTexto(restricao);
+
+      if (!unicas.has(chave)) {
+        unicas.set(chave, restricao);
+      }
+    });
+
+    return [...unicas.values()].sort((a, b) =>
+      a.localeCompare(b, "pt-BR")
+    );
+  }, [lista]);
+
   const pacientes = useMemo(() => {
+    const buscaNormalizada = normalizarTexto(busca);
+
     return lista
       .filter((paciente) => {
-        const texto = [
-          paciente.nome,
-          formatarRestricoes(paciente.restricoes),
-        ]
-          .join(" ")
-          .toLowerCase();
+        const restricoes = obterNomesRestricoes(
+          paciente.restricoes
+        );
 
-        return texto.includes(busca.toLowerCase());
+        const textoPesquisa = normalizarTexto(
+          [paciente.nome, ...restricoes].join(" ")
+        );
+
+        const correspondeBusca =
+          !buscaNormalizada ||
+          textoPesquisa.includes(buscaNormalizada);
+
+        const correspondeRestricao =
+          filtroRestricao === "todas" ||
+          restricoes.some(
+            (restricao) =>
+              normalizarTexto(restricao) ===
+              normalizarTexto(filtroRestricao)
+          );
+
+        return correspondeBusca && correspondeRestricao;
       })
       .sort((a, b) =>
         ordem === "asc"
           ? a.nome.localeCompare(b.nome, "pt-BR")
           : b.nome.localeCompare(a.nome, "pt-BR")
       );
-  }, [lista, busca, ordem]);
+  }, [lista, busca, ordem, filtroRestricao]);
+
+  const totalPaginas = Math.max(
+    1,
+    Math.ceil(pacientes.length / itensPorPagina)
+  );
+
+  const paginaAtual = Math.min(pagina, totalPaginas);
+
+  const pacientesPaginados = pacientes.slice(
+    (paginaAtual - 1) * itensPorPagina,
+    paginaAtual * itensPorPagina
+  );
+
+  const possuiFiltros =
+    busca.trim().length > 0 ||
+    filtroRestricao !== "todas";
+
+  function mensagemListaVazia(): string {
+    if (lista.length === 0) {
+      return "Nenhum paciente vinculado à sua conta.";
+    }
+
+    if (possuiFiltros) {
+      return "Nenhum paciente corresponde aos filtros selecionados.";
+    }
+
+    return "Nenhum paciente encontrado.";
+  }
 
   return (
     <div className="patients-page">
@@ -96,16 +192,51 @@ export default function Pacientes() {
           <Search size={16} />
 
           <input
+            type="search"
             value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-            placeholder="Buscar"
+            onChange={(event) => {
+              setBusca(event.target.value);
+              setPagina(1);
+            }}
+            placeholder="Buscar pacientes"
             aria-label="Buscar pacientes"
           />
         </label>
       </div>
 
+      <div className="patients-filters">
+        <label htmlFor="filtro-restricao">
+          Filtrar por restrição
+        </label>
+
+        <select
+          id="filtro-restricao"
+          value={filtroRestricao}
+          onChange={(event) => {
+            setFiltroRestricao(event.target.value);
+            setPagina(1);
+          }}
+        >
+          <option value="todas">
+            Todas as restrições
+          </option>
+
+          {restricoesDisponiveis.map((restricao) => (
+            <option
+              key={normalizarTexto(restricao)}
+              value={restricao}
+            >
+              {restricao}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {erro && (
-        <div className="demo-disclaimer" role="alert">
+        <div
+          className="demo-disclaimer"
+          role="alert"
+        >
           {erro}
         </div>
       )}
@@ -114,60 +245,86 @@ export default function Pacientes() {
         <table className="patients-table">
           <thead>
             <tr>
-              <th>
+              <th scope="col" aria-sort={
+                ordem === "asc" ? "ascending" : "descending"
+              }>
                 <button
                   type="button"
-                  onClick={() =>
-                    setOrdem(ordem === "asc" ? "desc" : "asc")
+                  onClick={() => {
+                    setOrdem((atual) =>
+                      atual === "asc" ? "desc" : "asc"
+                    );
+                    setPagina(1);
+                  }}
+                  aria-label={
+                    ordem === "asc"
+                      ? "Ordenar nomes de Z a A"
+                      : "Ordenar nomes de A a Z"
                   }
                 >
-                  Nome <ChevronDown size={12} />
+                  Nome
+                  <ChevronDown
+                    size={14}
+                    style={{
+                      transform:
+                        ordem === "asc"
+                          ? "rotate(180deg)"
+                          : "rotate(0deg)",
+                    }}
+                  />
                 </button>
               </th>
 
-              <th>Intolerância</th>
-              <th>Status</th>
+              <th scope="col">Intolerância</th>
+              <th scope="col">Ações</th>
             </tr>
           </thead>
 
           <tbody>
             {carregando ? (
               <tr>
-                <td colSpan={3}>Carregando pacientes...</td>
+                <td colSpan={3}>
+                  Carregando pacientes...
+                </td>
               </tr>
             ) : erro ? (
-  <tr>
-    <td colSpan={3}>
-      Não foi possível carregar a lista de pacientes.
-    </td>
-  </tr>
-) : pacientes.length === 0 ? (
               <tr>
                 <td colSpan={3}>
-                  {busca
-                    ? "Nenhum paciente encontrado."
-                    : "Nenhum paciente vinculado à sua conta."}
+                  Não foi possível carregar a lista
+                  de pacientes.
+                </td>
+              </tr>
+            ) : pacientes.length === 0 ? (
+              <tr>
+                <td colSpan={3}>
+                  {mensagemListaVazia()}
                 </td>
               </tr>
             ) : (
-              pacientes.map((paciente) => (
+              pacientesPaginados.map((paciente) => (
                 <tr key={paciente.id}>
                   <td>
-                    <NavLink to={`/pacientes/${paciente.id}`}>
+                    <NavLink
+                      to={`/pacientes/${paciente.id}`}
+                    >
                       {paciente.nome}
                     </NavLink>
                   </td>
 
                   <td>
-                    {formatarRestricoes(paciente.restricoes)}
+                    {formatarRestricoes(
+                      paciente.restricoes
+                    )}
                   </td>
 
                   <td>
-                    <span
-                      className="status-dot"
-                      title="Status ainda não calculado"
-                      style={{ backgroundColor: "#9ca3af" }}
-                    />
+                    <NavLink
+                      to={`/pacientes/${paciente.id}`}
+                      className="patient-view-button"
+                      aria-label={`Ver perfil de ${paciente.nome}`}
+                    >
+                      Ver perfil
+                    </NavLink>
                   </td>
                 </tr>
               ))
@@ -175,6 +332,40 @@ export default function Pacientes() {
           </tbody>
         </table>
       </div>
+
+      {!carregando &&
+        !erro &&
+        pacientes.length > 0 && (
+          <div className="patients-pagination">
+            <span>
+              Página {paginaAtual} de {totalPaginas}
+            </span>
+
+            <div>
+              <button
+                type="button"
+                disabled={paginaAtual === 1}
+                onClick={() =>
+                  setPagina(paginaAtual - 1)
+                }
+              >
+                Anterior
+              </button>
+
+              <button
+                type="button"
+                disabled={
+                  paginaAtual === totalPaginas
+                }
+                onClick={() =>
+                  setPagina(paginaAtual + 1)
+                }
+              >
+                Próxima
+              </button>
+            </div>
+          </div>
+        )}
     </div>
   );
 }

@@ -1,9 +1,12 @@
 
-import { obterSessao, encerrarSessao } from "./sessionService";
+import {
+  obterSessao,
+  encerrarSessao,
+} from "./sessionService";
 
 const API_URL = (
   import.meta.env.VITE_API_URL || "http://localhost:3000"
-).replace(/\/$/, "");
+).replace(/\/+$/, "");
 
 export async function api<T>(
   path: string,
@@ -11,42 +14,87 @@ export async function api<T>(
 ): Promise<T> {
   const token = obterSessao()?.token;
 
+  const headers = new Headers(options.headers);
+
+  // Adiciona o token às requisições autenticadas.
+  if (token && !headers.has("Authorization")) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+
+  // Define JSON somente quando há um corpo
+  // que não seja FormData.
+  if (
+    options.body != null &&
+    !(options.body instanceof FormData) &&
+    !headers.has("Content-Type")
+  ) {
+    headers.set("Content-Type", "application/json");
+  }
+
   let resposta: Response;
 
   try {
     resposta = await fetch(`${API_URL}${path}`, {
       ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...(token
-          ? { Authorization: `Bearer ${token}` }
-          : {}),
-        ...options.headers,
-      },
+      headers,
     });
-  } catch {
-    throw new Error(
-      "Não foi possível conectar ao backend. Confira se ele está ligado."
-    );
-  }
-
-  const dados = await resposta.json().catch(() => ({}));
-
-  if (resposta.status === 401) {
-    if (token && obterSessao()?.token === token) {
-      encerrarSessao();
-      window.location.replace("/login");
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw error;
     }
 
     throw new Error(
-      dados.mensagem || "Sua sessão expirou. Faça login novamente."
+      "Não foi possível conectar ao servidor. Verifique sua conexão."
     );
   }
 
+  let dados: unknown = {};
+
+  if (resposta.status !== 204) {
+    const texto = await resposta.text();
+
+    if (texto) {
+      try {
+        dados = JSON.parse(texto);
+      } catch {
+        dados = {};
+      }
+    }
+  }
+
   if (!resposta.ok) {
-    throw new Error(
-      dados.mensagem || `Erro HTTP ${resposta.status}`
-    );
+    const mensagem =
+      dados &&
+      typeof dados === "object" &&
+      "mensagem" in dados &&
+      typeof dados.mensagem === "string"
+        ? dados.mensagem
+        : `Erro HTTP ${resposta.status}`;
+
+    const rotaAutenticacao =
+      path === "/api/auth/login" ||
+      path === "/api/auth/cadastro";
+
+    if (
+      resposta.status === 401 &&
+      token &&
+      !rotaAutenticacao
+    ) {
+      // Evita encerrar uma sessão mais recente.
+      if (obterSessao()?.token === token) {
+        encerrarSessao();
+
+        if (window.location.pathname !== "/login") {
+          window.location.replace("/login");
+        }
+      }
+
+      throw new Error(
+        "Sua sessão não é mais válida. Faça login novamente."
+      );
+    }
+
+    throw new Error(mensagem);
   }
 
   return dados as T;

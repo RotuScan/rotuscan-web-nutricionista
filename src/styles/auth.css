@@ -40,7 +40,7 @@
   right: -100px;
   top: -45px;
 
-  background: #e45c70;
+  background: #79DC4F;
   transform: rotate(17deg);
   clip-path: polygon(35% 0, 100% 0, 100% 100%, 0 65%);
 }
@@ -52,7 +52,7 @@
   bottom: -120px;
 
   border-radius: 50%;
-  background: #ffda4c;
+  background: #FFB31F;
 }
 
 /* CARD PRINCIPAL */
@@ -608,3 +608,59 @@
   }
 }
  
+.auth-sidebar .brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.auth-sidebar .auth-logo {
+  display: block;
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+}
+
+@media (max-width: 700px) {
+  .auth-sidebar .auth-logo {
+    width: 65px;
+    height: 65px;
+  }
+}
+
+/* Logo no canto superior esquerdo */
+
+.auth-sidebar {
+  position: relative;
+}
+
+.auth-sidebar .brand {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  width: auto;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  z-index: 2;
+}
+
+.auth-sidebar .auth-logo {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+}
+
+@media (max-width: 700px) {
+  .auth-sidebar .brand {
+    top: 15px;
+    left: 15px;
+  }
+
+  .auth-sidebar .auth-logo {
+    width: 45px;
+    height: 45px;
+  }
+}

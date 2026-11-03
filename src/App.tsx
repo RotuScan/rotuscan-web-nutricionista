@@ -23,14 +23,25 @@ function RotaPublica() {
   return <Auth />;
 }
 
+function RotaInicial() {
+  const sessao = obterSessao();
+
+  return (
+    <Navigate
+      to={sessao ? "/dashboard" : "/login"}
+      replace
+    />
+  );
+}
+
 export default function App() {
   return (
     <Routes>
-      {/* Rotas públicas */}
+      {/* ROTAS PÚBLICAS */}
       <Route path="/login" element={<RotaPublica />} />
       <Route path="/cadastro" element={<RotaPublica />} />
 
-      {/* Rotas protegidas */}
+      {/* ROTAS PROTEGIDAS */}
       <Route
         element={
           <ProtectedRoute>
@@ -60,11 +71,8 @@ export default function App() {
         />
       </Route>
 
-      {/* Página inexistente */}
-      <Route
-        path="*"
-        element={<Navigate to="/dashboard" replace />}
-      />
+      {/* ROTAS NÃO ENCONTRADAS */}
+      <Route path="*" element={<RotaInicial />} />
     </Routes>
   );
 }

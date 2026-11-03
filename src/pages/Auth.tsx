@@ -16,10 +16,14 @@ import {
 } from "../services/authService";
 
 import { salvarSessao } from "../services/sessionService";
-
+import logoSimbolo from "../assets/rotuscan-simbolo.png";
 import "../styles/auth.css";
 
 type AuthMode = "login" | "cadastro";
+
+function validarCRN(crn: string): boolean {
+  return /^CRN[-\s]?\d{1,2}\s+\d{3,10}$/i.test(crn.trim());
+}
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -35,6 +39,7 @@ export default function Auth() {
   const [crn, setCrn] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
   const isCadastro = mode === "cadastro";
@@ -42,6 +47,7 @@ export default function Auth() {
   function trocarModo() {
     setErro("");
     setSenha("");
+    setConfirmarSenha("");
     setMostrarSenha(false);
 
     navigate(isCadastro ? "/login" : "/cadastro");
@@ -51,6 +57,24 @@ export default function Auth() {
     event.preventDefault();
 
     if (carregando) return;
+
+    if (isCadastro) {
+      if (senha.length < 8 || senha.length > 72) {
+        setErro("A senha deve ter entre 8 e 72 caracteres.");
+        return;
+      }
+
+      if (!validarCRN(crn)) {
+        setErro("CRN inválido. Use o formato CRN-3 12345.");
+        return;
+      }
+
+      if (senha !== confirmarSenha) {
+        setErro("As senhas não coincidem.");
+        return;
+      }
+    }
+
 
     setErro("");
     setCarregando(true);
@@ -77,16 +101,17 @@ export default function Auth() {
 
       navigate("/pacientes", { replace: true });
     } catch (e) {
-      setErro(
-        e instanceof Error
-          ? e.message
-          : "Não foi possível autenticar. Tente novamente."
-      );
-    } finally {
-      setCarregando(false);
-    }
-  }
+  const mensagem =
+    e instanceof Error
+      ? e.message
+      : "Ocorreu um erro inesperado. Tente novamente.";
 
+  setErro(
+    mensagem === "Failed to fetch"
+      ? "Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente."
+      : mensagem
+  );
+    }}
   return (
     <main className="auth-page">
       <div className="shape shape-red" aria-hidden="true" />
@@ -96,8 +121,12 @@ export default function Auth() {
         <aside className="auth-sidebar">
           {/* Espaço preparado para a logo oficial */}
           <div className="brand">
-            <span className="brand-symbol">R</span>
-          </div>
+  <img
+    src={logoSimbolo}
+    alt="RotuScan"
+    className="auth-logo"
+  />
+</div>
 
           <div className="sidebar-content">
             <h2>
@@ -218,6 +247,8 @@ export default function Auth() {
                   required
                 />
 
+
+
                 <button
                   type="button"
                   className="password-toggle"
@@ -236,6 +267,26 @@ export default function Auth() {
                   )}
                 </button>
               </label>
+
+              {isCadastro && (
+                <label className="input-group">
+                  <span className="input-icon">
+                    <LockKeyhole size={18} />
+                  </span>
+
+                  <input
+                    type={mostrarSenha ? "text" : "password"}
+                    placeholder="Confirmar senha"
+                    aria-label="Confirmar senha"
+                    autoComplete="new-password"
+                    value={confirmarSenha}
+                    onChange={(e) => setConfirmarSenha(e.target.value)}
+                    minLength={8}
+                    maxLength={72}
+                    required
+                  />
+                </label>
+              )}
 
               {isCadastro && (
                 <p className="auth-field-hint">

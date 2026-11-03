@@ -126,7 +126,7 @@ async function copiarCRN() {
   return (
     <div className="settings-page">
       <div className="settings-heading">
-        <h1>Configurações</h1>
+      
         <p>
           Gerencie sua conta e suas preferências profissionais.
         </p>
