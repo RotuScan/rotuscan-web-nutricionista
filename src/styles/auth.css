@@ -1,0 +1,610 @@
+
+/* ========================================
+   ROTUSCAN — LOGIN E CADASTRO
+======================================== */
+
+.auth-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  padding: 40px 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 80% 15%,
+      rgba(28, 185, 139, 0.1),
+      transparent 35%
+    ),
+    #edf5f3;
+}
+
+/* FORMAS DECORATIVAS */
+
+.shape {
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.shape-red {
+  width: 340px;
+  height: 240px;
+  right: -100px;
+  top: -45px;
+
+  background: #e45c70;
+  transform: rotate(17deg);
+  clip-path: polygon(35% 0, 100% 0, 100% 100%, 0 65%);
+}
+
+.shape-yellow {
+  width: 310px;
+  height: 310px;
+  left: -145px;
+  bottom: -120px;
+
+  border-radius: 50%;
+  background: #ffda4c;
+}
+
+/* CARD PRINCIPAL */
+
+.auth-card {
+  width: 100%;
+  max-width: 1000px;
+  min-height: 580px;
+
+  display: flex;
+  position: relative;
+  z-index: 1;
+
+  background: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 28px;
+  overflow: hidden;
+
+  box-shadow:
+    0 24px 65px rgba(16, 76, 57, 0.1),
+    0 5px 18px rgba(16, 76, 57, 0.04);
+}
+
+/* PAINEL VERDE */
+
+.auth-sidebar {
+  width: 43%;
+  min-width: 0;
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 80px 35px 45px;
+  overflow: hidden;
+
+  color: #fff;
+
+  background: linear-gradient(
+    145deg,
+    #008f76 0%,
+    #12a987 48%,
+    #39be83 100%
+  );
+}
+
+.auth-sidebar::before {
+  content: "";
+  position: absolute;
+  width: 330px;
+  height: 330px;
+  right: -190px;
+  top: -170px;
+
+  border: 55px solid rgba(255, 255, 255, 0.07);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.auth-sidebar::after {
+  content: "";
+  position: absolute;
+  width: 270px;
+  height: 270px;
+  left: -115px;
+  bottom: -155px;
+
+  border-radius: 50%;
+  background: rgba(0, 100, 77, 0.17);
+  pointer-events: none;
+}
+
+/* MARCA */
+
+.brand {
+  position: absolute;
+  top: 28px;
+  left: 30px;
+  z-index: 1;
+}
+
+.brand-symbol {
+  color: #fff;
+  font-size: 55px;
+  font-weight: 900;
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+/* Permite inserir uma imagem da marca no futuro */
+
+.brand img {
+  display: block;
+  max-width: 165px;
+  max-height: 65px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* TEXTO DO PAINEL */
+
+.sidebar-content {
+  width: 100%;
+  max-width: 310px;
+  position: relative;
+  z-index: 1;
+
+  text-align: center;
+}
+
+.sidebar-content h2 {
+  margin: 0 0 32px;
+  font-size: clamp(24px, 2.6vw, 31px);
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -0.6px;
+}
+
+/* ALTERNAR LOGIN / CADASTRO */
+
+.switch-button {
+  width: 210px;
+  max-width: 100%;
+  min-height: 48px;
+  padding: 10px 20px;
+
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-radius: 30px;
+
+  background: transparent;
+  color: #fff;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.switch-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.switch-button:active {
+  transform: translateY(0);
+}
+
+/* PAINEL DO FORMULÁRIO */
+
+.auth-form-panel {
+  width: 57%;
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 55px 45px;
+}
+
+.form-content {
+  width: 100%;
+  max-width: 385px;
+  text-align: center;
+}
+
+.form-content h1 {
+  margin: 0 0 14px;
+
+  color: #079b78;
+  font-size: clamp(28px, 3vw, 36px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.2;
+}
+
+/* BOTÕES SOCIAIS, CASO EXISTAM */
+
+.social-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 28px;
+}
+
+.social-buttons button {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #dce6e1;
+  border-radius: 50%;
+
+  background: #fff;
+  color: #253d34;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.social-buttons button:hover {
+  border-color: #079b78;
+  background: #f1faf5;
+}
+
+/* CAMPOS */
+
+.input-group {
+  width: 100%;
+  min-height: 53px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-bottom: 16px;
+  padding: 0 15px;
+
+  background: #f4f7f5;
+  border: 1px solid #e3ebe6;
+  border-radius: 11px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.input-group:hover {
+  border-color: #c3dcd0;
+}
+
+.input-group:focus-within {
+  background: #fff;
+  border-color: #079b78;
+  box-shadow: 0 0 0 3px rgba(7, 155, 120, 0.11);
+}
+
+.input-icon {
+  width: 25px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #84978d;
+  font-size: 17px;
+}
+
+.input-group:focus-within .input-icon {
+  color: #079b78;
+}
+
+.input-group input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: 51px;
+
+  border: none;
+  outline: none;
+  background: transparent;
+
+  color: #23362e;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.input-group input::placeholder {
+  color: #91a098;
+}
+
+/* CORREÇÃO DO AUTOPREENCHIMENTO */
+
+.input-group input:-webkit-autofill {
+  -webkit-text-fill-color: #23362e;
+  -webkit-box-shadow: 0 0 0 100px #f4f7f5 inset;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* BOTÃO PRINCIPAL */
+
+.submit-button {
+  width: 200px;
+  max-width: 100%;
+  min-height: 49px;
+
+  margin-top: 12px;
+  padding: 12px 22px;
+
+  border: none;
+  border-radius: 30px;
+
+  background: linear-gradient(135deg, #079b78, #18ae86);
+  color: #fff;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  box-shadow: 0 6px 16px rgba(7, 155, 120, 0.17);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.submit-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(0.96);
+  box-shadow: 0 9px 20px rgba(7, 155, 120, 0.24);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submit-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ACESSIBILIDADE */
+
+.switch-button:focus-visible,
+.submit-button:focus-visible,
+.social-buttons button:focus-visible {
+  outline: 3px solid #ffb347;
+  outline-offset: 3px;
+}
+
+/* TABLETS */
+
+@media (max-width: 900px) {
+  .auth-card {
+    max-width: 760px;
+  }
+
+  .auth-sidebar {
+    width: 40%;
+    padding-inline: 24px;
+  }
+
+  .auth-form-panel {
+    width: 60%;
+    padding: 45px 30px;
+  }
+
+  .sidebar-content h2 {
+    font-size: 25px;
+  }
+}
+
+/* CELULARES */
+
+@media (max-width: 700px) {
+  .auth-page {
+    padding: 20px 14px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .auth-card {
+    flex-direction: column;
+    min-height: 0;
+    border-radius: 22px;
+  }
+
+  .auth-sidebar {
+    width: 100%;
+    min-height: 215px;
+    padding: 75px 20px 26px;
+  }
+
+  .brand {
+    top: 18px;
+    left: 22px;
+  }
+
+  .brand-symbol {
+    font-size: 40px;
+  }
+
+  .brand img {
+    max-width: 130px;
+    max-height: 45px;
+  }
+
+  .sidebar-content h2 {
+    margin-bottom: 20px;
+    font-size: 23px;
+  }
+
+  .switch-button {
+    width: 185px;
+    min-height: 43px;
+    font-size: 14px;
+  }
+
+  .auth-form-panel {
+    width: 100%;
+    padding: 38px 24px 42px;
+  }
+
+  .form-content {
+    max-width: 400px;
+  }
+
+  .form-content h1 {
+    font-size: 29px;
+  }
+
+  .input-group {
+    min-height: 50px;
+    margin-bottom: 13px;
+  }
+
+  .input-group input {
+    height: 49px;
+  }
+
+  .shape-red {
+    width: 220px;
+    height: 160px;
+    right: -100px;
+  }
+
+  .shape-yellow {
+    width: 210px;
+    height: 210px;
+    left: -120px;
+    bottom: -90px;
+  }
+}
+
+/* CELULARES PEQUENOS */
+
+@media (max-width: 380px) {
+  .auth-page {
+    padding: 12px;
+  }
+
+  .auth-form-panel {
+    padding: 32px 18px;
+  }
+
+  .sidebar-content h2 {
+    font-size: 21px;
+  }
+
+  .form-content h1 {
+    font-size: 26px;
+  }
+}
+
+/* MOVIMENTO REDUZIDO */
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-page *,
+  .auth-page *::before,
+  .auth-page *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+
+
+/* DESCRIÇÃO DO FORMULÁRIO */
+
+.auth-description {
+  margin: 0 0 30px;
+  color: #7b8b83;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* INFORMAÇÕES AUXILIARES */
+
+.auth-field-hint {
+  margin: -7px 0 17px;
+  text-align: left;
+  color: #82938a;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* MOSTRAR / OCULTAR SENHA */
+
+.password-toggle {
+  width: 30px;
+  height: 35px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: #82938a;
+}
+
+.password-toggle:hover {
+  color: #079b78;
+  background: #e6f3ec;
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid #079b78;
+  outline-offset: 2px;
+}
+
+/* MENSAGENS DE ERRO */
+
+.auth-error {
+  margin: 12px 0 5px;
+  padding: 12px 14px;
+
+  background: #fff0f1;
+  border: 1px solid #f5d2d6;
+  border-radius: 9px;
+
+  color: #b72d43;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+/* PEQUENOS AJUSTES PARA CELULAR */
+
+@media (max-width: 700px) {
+  .auth-description {
+    margin-bottom: 24px;
+    font-size: 13px;
+  }
+
+  .auth-field-hint {
+    font-size: 11px;
+  }
+}
+ 

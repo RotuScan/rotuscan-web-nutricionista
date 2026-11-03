@@ -1,0 +1,16 @@
+.dashboard-page{max-width:1300px;margin:0 auto}.dashboard-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:25px;margin:2px 0 43px}.dashboard-stats article{background:#fff;border:1px solid #ddd;box-shadow:0 2px 3px #0002;border-radius:12px;padding:17px;min-height:130px;position:relative;display:flex;flex-direction:column;align-items:flex-start}.dashboard-stats article>span{font-size:13px;color:#4c5158}.dashboard-stats strong{font-size:40px;margin:6px 20px}.dashboard-stats small{font-size:11px;color:#788}.metric-icon{position:absolute;right:16px;top:14px;box-sizing:content-box;border-radius:6px;padding:13px}.metric-icon.green{color:#218a65;background:#e2f4eb;border:1px solid #62a98c}.metric-icon.red{color:#e7484b;background:#ffeaec;border:1px solid #f77}.metric-icon.blue{color:#5269a9;background:#e9efff;border:1px solid #758ad3}.dashboard-chart,.dashboard-history{background:#fff;border-radius:16px;padding:23px;margin:0 10px 24px}.dashboard-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}.dashboard-section-head h2{font-size:16px;margin-bottom:6px}.dashboard-section-head p{font-size:12px;color:#899bc0}.period-tabs{background:#f5f7fa;border-radius:12px;display:flex;gap:4px;padding:4px;font-size:11px;color:#6e83a5}.period-tabs span{padding:8px 12px}.period-tabs .selected{background:#005640;color:#fff;border-radius:8px}.chart-empty{height:220px;display:grid;align-content:center;justify-items:center;gap:15px;color:#849a91;text-align:center}.chart-empty p{font-size:13px}.history-header{display:grid;grid-template-columns:2fr 1fr 1fr .7fr;border-bottom:1px solid #eee;padding:25px 8px 12px;color:#8297b7;font-size:12px}.history-empty{padding:30px 8px;color:#899;font-size:13px}@media(max-width:900px){.dashboard-stats{grid-template-columns:1fr}.dashboard-section-head{flex-wrap:wrap}}
+.period-tabs button {
+  border: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.period-tabs button.selected {
+  background: #e6f5ed;
+  color: #20845b;
+  font-weight: 600;
+}
