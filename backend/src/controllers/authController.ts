@@ -3,25 +3,15 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+import {
+  normalizarCRN,
+  validarEmail,
+  validarSenha,
+  validarCRN,
+  validarNome,
+} from "../utils/validacaoAuth.js";
+
 import { NutricionistaMongo } from "../models/NutricionistaMongo.js";
-
-
-function normalizarCRN(crn: string): string {
-  const valor = crn
-    .trim()
-    .toUpperCase()
-    .replace(/\s+/g, " ");
-
-  const correspondencia = valor.match(
-    /^CRN[-\s]?(\d{1,2})\s+(\d{3,10})$/
-  );
-
-  if (correspondencia) {
-    return `CRN-${correspondencia[1]} ${correspondencia[2]}`;
-  }
-
-  return valor;
-}
 
 
 export async function cadastrarNutricionista(
@@ -48,36 +38,29 @@ export async function cadastrarNutricionista(
     }
 
     const nomeLimpo = nome.trim();
-    const emailLimpo = email.trim().toLowerCase();
-    const crnLimpo = normalizarCRN(crn);
+const emailLimpo = email.trim().toLowerCase();
+const crnLimpo = normalizarCRN(crn);
 
-    if (
-      nomeLimpo.length > 150 ||
-      emailLimpo.length > 255 ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailLimpo)
-    ) {
-      res.status(400).json({
-        mensagem: "Nome ou e-mail inválido.",
-      });
-      return;
-    }
+if (!validarNome(nome) || !validarEmail(email)) {
+  res.status(400).json({
+    mensagem: "Nome ou e-mail inválido.",
+  });
+  return;
+}
 
-    if (senha.length < 8 || senha.length > 72) {
-      res.status(400).json({
-        mensagem: "A senha deve ter entre 8 e 72 caracteres.",
-      });
-      return;
-    }
+if (!validarSenha(senha)) {
+  res.status(400).json({
+    mensagem: "A senha deve ter entre 8 e 72 caracteres.",
+  });
+  return;
+}
 
-    if (
-      crnLimpo.length > 40 ||
-      !/^CRN[-\s]?\d{1,2}\s+\d{3,10}$/.test(crnLimpo)
-    ) {
-      res.status(400).json({
-        mensagem: "CRN inválido. Exemplo: CRN-3 12345.",
-      });
-      return;
-    }
+if (!validarCRN(crn)) {
+  res.status(400).json({
+    mensagem: "CRN inválido. Exemplo: CRN-3 12345.",
+  });
+  return;
+}
 
     const emailExistente = await NutricionistaMongo.findOne({
       email: emailLimpo,
