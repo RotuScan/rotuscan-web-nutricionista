@@ -30,9 +30,10 @@ export async function listarPacientes(
     const pacientes = await db
       .collection("users")
       .find({
-        nutricionistaId: new mongoose.Types.ObjectId(nutricionistaId),
-        role: "PACIENTE",
-      })
+  nutricionistaId: new mongoose.Types.ObjectId(nutricionistaId),
+  role: "PACIENTE",
+  vinculadoEm: { $type: "date" },
+})
       .project({
         nome: 1,
         restricoes: 1,
@@ -106,11 +107,12 @@ export async function obterPacientePorId(
       },
       {
         projection: {
-          nome: 1,
-          email: 1,
-          restricoes: 1,
-          niveisSensibilidade: 1,
-        },
+  nome: 1,
+  email: 1,
+  restricoes: 1,
+  niveisSensibilidade: 1,
+  vinculadoEm: 1,
+},
       }
     );
 
@@ -121,11 +123,31 @@ export async function obterPacientePorId(
       return;
     }
 
+    const vinculadoEm = paciente.vinculadoEm;
+
+if (
+  !(vinculadoEm instanceof Date) ||
+  Number.isNaN(vinculadoEm.getTime())
+) {
+  res.status(403).json({
+    mensagem: "Data de autorização do vínculo não encontrada.",
+  });
+  return;
+}
+
     const scans = await db
       .collection("scanlogs")
       .find({
-        userId: paciente._id,
-      })
+  userId: {
+    $in: [
+      paciente._id,
+      paciente._id.toString(),
+    ],
+  },
+  createdAt: {
+    $gte: vinculadoEm,
+  },
+})
       .project({
         nomeProduto: 1,
         veredito: 1,
@@ -166,3 +188,4 @@ export async function obterPacientePorId(
     });
   }
 }
+

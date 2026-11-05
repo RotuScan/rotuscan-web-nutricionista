@@ -29,24 +29,31 @@ export async function obterDashboard(
       return;
     }
 
-    const pacientes = await db
+    // Apenas pacientes com vínculo ativo e data válida.
+    const pacientesEncontrados = await db
       .collection("users")
       .find({
         nutricionistaId: new mongoose.Types.ObjectId(
           nutricionistaId
         ),
         role: "PACIENTE",
+        vinculadoEm: { $type: "date" },
       })
-      .project({ nome: 1 })
+      .project({
+        nome: 1,
+        vinculadoEm: 1,
+      })
       .toArray();
 
-    const idsPacientes = pacientes.map(
-      (paciente) => paciente._id
+    const pacientes = pacientesEncontrados.filter(
+      (paciente) =>
+        paciente.vinculadoEm instanceof Date &&
+        !Number.isNaN(paciente.vinculadoEm.getTime())
     );
 
     const totalPacientes = pacientes.length;
 
-    if (idsPacientes.length === 0) {
+    if (totalPacientes === 0) {
       res.json({
         totalPacientes: 0,
         totalScans: 0,
@@ -59,35 +66,56 @@ export async function obterDashboard(
 
     const scansCollection = db.collection("scanlogs");
 
+    // Cada paciente só pode ter scans consultados
+    // a partir da sua própria data de aprovação.
     const filtro = {
-      userId: { $in: idsPacientes },
+      $or: pacientes.map((paciente) => ({
+        userId: {
+          $in: [
+            paciente._id,
+            paciente._id.toString(),
+          ],
+        },
+        createdAt: {
+          $gte: paciente.vinculadoEm as Date,
+        },
+      })),
     };
 
-    const totalScans = await scansCollection.countDocuments(
-      filtro
+    const totalScans =
+      await scansCollection.countDocuments(filtro);
+
+    const seteDiasAtras = new Date(
+      Date.now() - 7 * 24 * 60 * 60 * 1000
     );
 
     const alertasRecentes =
       await scansCollection.countDocuments({
-        ...filtro,
-        veredito: "PERIGOSO",
-        createdAt: {
-          $gte: new Date(
-            Date.now() - 7 * 24 * 60 * 60 * 1000
-          ),
-        },
+        $and: [
+          filtro,
+          {
+            veredito: "PERIGOSO",
+            createdAt: { $gte: seteDiasAtras },
+          },
+        ],
       });
 
     const dataInicial = new Date();
     dataInicial.setUTCHours(0, 0, 0, 0);
-    dataInicial.setUTCDate(dataInicial.getUTCDate() - 29);
+    dataInicial.setUTCDate(
+      dataInicial.getUTCDate() - 29
+    );
 
     const scansPorDia = await scansCollection
       .aggregate([
         {
           $match: {
-            ...filtro,
-            createdAt: { $gte: dataInicial },
+            $and: [
+              filtro,
+              {
+                createdAt: { $gte: dataInicial },
+              },
+            ],
           },
         },
         {
@@ -139,16 +167,22 @@ export async function obterDashboard(
       scansPorDia,
       ultimosScans: ultimosScans.map((scan) => ({
         id: scan._id.toString(),
-        nomeProduto: scan.nomeProduto ?? "Produto não informado",
+        nomeProduto:
+          scan.nomeProduto ?? "Produto não informado",
         paciente:
-          nomesPacientes.get(scan.userId?.toString()) ??
-          "Paciente",
+          nomesPacientes.get(
+            scan.userId?.toString()
+          ) ?? "Paciente",
         data: scan.createdAt,
-        veredito: scan.veredito ?? "INDEFINIDO",
+        veredito:
+          scan.veredito ?? "INDEFINIDO",
       })),
     });
   } catch (error) {
-    console.error("Erro ao consultar dashboard:", error);
+    console.error(
+      "Erro ao consultar dashboard:",
+      error
+    );
 
     res.status(500).json({
       mensagem: "Erro interno ao consultar dashboard.",

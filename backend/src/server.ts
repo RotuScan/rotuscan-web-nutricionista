@@ -9,6 +9,8 @@ import authRoutes from "./routes/authRoutes.js";
 import nutricionistaRoutes from "./routes/nutricionistaRoutes.js";
 import pacienteRoutes from "./routes/pacienteRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
+import vinculacaoRoutes from "./routes/vinculacaoRoutes.js";
+
 
 const app = express();
 
@@ -31,6 +33,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/nutricionistas", nutricionistaRoutes);
 app.use("/api/pacientes", pacienteRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/vinculacoes", vinculacaoRoutes);
 
 app.get("/", (_req, res) => {
   res.json({
@@ -38,12 +41,16 @@ app.get("/", (_req, res) => {
   });
 });
 
+
 app.get("/api/health", (_req, res) => {
-  res.json({
-    status: "OK",
-    message: "API RotuScan funcionando!",
+  res.status(200).json({
+    status: "ok",
+    servico: "rotuscan-backend",
+    timestamp: new Date().toISOString(),
+    uptime: Math.floor(process.uptime()),
   });
 });
+
 
 async function iniciarServidor() {
   try {

@@ -64,8 +64,8 @@ schema.index(
   }
 );
 
-export const NutricionistaMongo =
-  mongoose.models.Nutricionista ??
+export const NutricionistaMongo: mongoose.Model<INutricionista> =
+  (mongoose.models.Nutricionista as mongoose.Model<INutricionista> | undefined) ??
   mongoose.model<INutricionista>(
     "Nutricionista",
     schema

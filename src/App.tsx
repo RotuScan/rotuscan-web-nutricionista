@@ -9,6 +9,7 @@ import Pacientes from "./pages/Pacientes";
 import PerfilPaciente from "./pages/PerfilPaciente";
 import Receitas from "./pages/Receitas";
 import Configuracoes from "./pages/Configuracoes";
+import Solicitacoes from "./pages/Solicitacoes";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import NutricionistaLayout from "./components/NutricionistaLayout";
@@ -57,6 +58,8 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
 
         <Route path="/pacientes" element={<Pacientes />} />
+
+        <Route path="/solicitacoes" element={<Solicitacoes />} />
 
         <Route
           path="/pacientes/:id"
