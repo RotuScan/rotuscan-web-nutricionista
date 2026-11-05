@@ -6,6 +6,7 @@ import {
   ClipboardList,
   Settings,
   LogOut,
+  UserRoundCheck,
 } from "lucide-react";
 
 import logoCompleta from "../assets/rotuscan-logo.png";
@@ -41,6 +42,11 @@ export default function Sidebar({ onSair }: SidebarProps) {
         <NavLink to="/pacientes">
           <UsersRound size={18} />
           Pacientes
+        </NavLink>
+
+        <NavLink to="/solicitacoes">
+          <UserRoundCheck size={18} />
+          Solicitações
         </NavLink>
 
         <NavLink to="/receitas">

@@ -40,12 +40,13 @@ const solicitacaoVinculoSchema = new Schema<ISolicitacaoVinculo>(
 // Impede solicitações pendentes duplicadas
 // para o mesmo paciente e nutricionista.
 solicitacaoVinculoSchema.index(
-  { pacienteId: 1, nutricionistaId: 1 },
+  { pacienteId: 1 },
   {
     unique: true,
     partialFilterExpression: {
       status: "PENDENTE",
     },
+    name: "unique_paciente_pendente",
   }
 );
 

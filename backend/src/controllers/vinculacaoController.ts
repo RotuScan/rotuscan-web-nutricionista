@@ -91,6 +91,7 @@ export async function listarSolicitacoes(
 }
 
 
+
 export async function recusarSolicitacao(
   req: RequisicaoAutenticada,
   res: Response
@@ -99,7 +100,10 @@ export async function recusarSolicitacao(
     const nutricionistaId = req.nutricionistaId;
     const solicitacaoId = req.params.id;
 
-    if (!nutricionistaId || !mongoose.isValidObjectId(nutricionistaId)) {
+    if (
+      !nutricionistaId ||
+      !mongoose.isValidObjectId(nutricionistaId)
+    ) {
       res.status(401).json({
         mensagem: "Nutricionista não autenticado.",
       });
@@ -119,14 +123,15 @@ export async function recusarSolicitacao(
     const solicitacao = await SolicitacaoVinculo.findOneAndUpdate(
       {
         _id: new mongoose.Types.ObjectId(solicitacaoId),
-        $set: {
-  nutricionistaId: new mongoose.Types.ObjectId(nutricionistaId),
-  vinculadoEm: new Date(),
-},
+        nutricionistaId: new mongoose.Types.ObjectId(
+          nutricionistaId
+        ),
         status: "PENDENTE",
       },
       {
-        $set: { status: "RECUSADO" },
+        $set: {
+          status: "RECUSADO",
+        },
       },
       {
         new: true,
@@ -219,6 +224,7 @@ export async function aprovarSolicitacao(
             nutricionistaId: new mongoose.Types.ObjectId(
               nutricionistaId
             ),
+            vinculadoEm: new Date(),
           },
         },
         { session }
@@ -489,10 +495,10 @@ export async function consultarStatusVinculo(
         vinculado: true,
         nutricionista: nutricionista
           ? {
-              id: String(nutricionista._id),
-              nome: nutricionista.nome,
-              crn: nutricionista.crn,
-            }
+            id: String(nutricionista._id),
+            nome: nutricionista.nome,
+            crn: nutricionista.crn,
+          }
           : null,
         vinculadoEm: paciente.vinculadoEm ?? null,
       });
@@ -524,10 +530,10 @@ export async function consultarStatusVinculo(
       },
       nutricionista: nutricionista
         ? {
-            id: String(nutricionista._id),
-            nome: nutricionista.nome,
-            crn: nutricionista.crn,
-          }
+          id: String(nutricionista._id),
+          nome: nutricionista.nome,
+          crn: nutricionista.crn,
+        }
         : null,
     });
   } catch (erro) {

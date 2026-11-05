@@ -1,0 +1,43 @@
+
+/* Perfil do paciente */
+
+.perfil-paciente-dados {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 32px;
+  margin-top: 20px;
+}
+
+.perfil-paciente-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.perfil-paciente-campo strong {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.perfil-paciente-campo span {
+  color: #172b2a;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.perfil-paciente-dados .perfil-paciente-campo:last-child {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 700px) {
+  .perfil-paciente-dados {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}

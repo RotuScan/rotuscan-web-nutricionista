@@ -1,5 +1,6 @@
-
+﻿
 import "../styles/pacientes.css";
+import "../styles/perfilPaciente.css";
 
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -21,7 +22,7 @@ import {
 
 function formatarItens(itens: unknown): string {
   if (!Array.isArray(itens) || itens.length === 0) {
-    return "Não informado";
+    return "NÃ£o informado";
   }
 
   const nomes = itens
@@ -51,14 +52,14 @@ function formatarItens(itens: unknown): string {
 
   return nomes.length > 0
     ? nomes.join(", ")
-    : "Não informado";
+    : "NÃ£o informado";
 }
 
 function formatarSensibilidade(
   valores: Record<string, unknown> | null | undefined
 ): string {
   if (!valores || typeof valores !== "object") {
-    return "Não informado";
+    return "NÃ£o informado";
   }
 
   const entradas = Object.entries(valores).filter(
@@ -66,7 +67,7 @@ function formatarSensibilidade(
   );
 
   if (entradas.length === 0) {
-    return "Não informado";
+    return "NÃ£o informado";
   }
 
   return entradas
@@ -75,18 +76,18 @@ function formatarSensibilidade(
         typeof nivel === "string" ||
         typeof nivel === "number"
           ? String(nivel)
-          : "Não informado";
+          : "NÃ£o informado";
 
       return `${restricao}: ${valor}`;
     })
-    .join(" • ");
+    .join(" â€¢ ");
 }
 
 function formatarData(data: string): string {
   const dataConvertida = new Date(data);
 
   if (Number.isNaN(dataConvertida.getTime())) {
-    return "Data não informada";
+    return "Data nÃ£o informada";
   }
 
   return dataConvertida.toLocaleString("pt-BR", {
@@ -258,7 +259,7 @@ useEffect(() => {
     return (
       <div className="page-heading" role="status">
         <h1>Perfil do paciente</h1>
-        <p>Carregando informações...</p>
+        <p>Carregando informaÃ§Ãµes...</p>
       </div>
     );
   }
@@ -272,7 +273,7 @@ useEffect(() => {
 
         <div className="panel">
           <p className="notice" role="alert">
-            {erro || "Paciente não encontrado."}
+            {erro || "Paciente nÃ£o encontrado."}
           </p>
 
           <Link to="/pacientes">
@@ -286,7 +287,7 @@ useEffect(() => {
 
   const { paciente, scans } = dados;
 
-  // O backend retorna um histórico limitado.
+  // O backend retorna um histÃ³rico limitado.
   // Os indicadores representam os registros carregados.
   const scansNoHistorico = scans.length;
 
@@ -309,43 +310,48 @@ useEffect(() => {
         <h1>{paciente.nome}</h1>
 
         <p>
-          Informações e histórico individual do paciente.
+          InformaÃ§Ãµes e histÃ³rico individual do paciente.
         </p>
       </div>
 
-      <section className="panel">
-        <h2>
-          <UsersRound size={20} />
-          Dados do paciente
-        </h2>
 
-        <p>
-          <strong>Nome:</strong> {paciente.nome}
-        </p>
+<section className="panel">
+  <h2>
+    <UsersRound size={20} />
+    Dados do paciente
+  </h2>
 
-        <p>
-          <strong>E-mail:</strong>{" "}
-          {paciente.email || "Não informado"}
-        </p>
+  <div className="perfil-paciente-dados">
+    <div className="perfil-paciente-campo">
+      <strong>Nome</strong>
+      <span>{paciente.nome}</span>
+    </div>
 
-        <p>
-          <strong>Restrições alimentares:</strong>{" "}
-          {formatarItens(paciente.restricoes)}
-        </p>
+    <div className="perfil-paciente-campo">
+      <strong>E-mail</strong>
+      <span>{paciente.email || "NÃ£o informado"}</span>
+    </div>
 
-        <p>
-          <strong>Níveis de sensibilidade:</strong>{" "}
-          {formatarSensibilidade(
-            paciente.niveisSensibilidade
-          )}
-        </p>
-      </section>
+    <div className="perfil-paciente-campo">
+      <strong>RestriÃ§Ãµes alimentares</strong>
+      <span>{formatarItens(paciente.restricoes)}</span>
+    </div>
+
+    <div className="perfil-paciente-campo">
+      <strong>NÃ­veis de sensibilidade</strong>
+      <span>
+        {formatarSensibilidade(paciente.niveisSensibilidade)}
+      </span>
+    </div>
+  </div>
+</section>
+
 
       <div className="patient-stats">
         <div className="patient-stat-card">
           <ScanLine size={22} color="#176b49" />
 
-          <span>Scans no histórico</span>
+          <span>Scans no histÃ³rico</span>
           <strong>{scansNoHistorico}</strong>
         </div>
 
@@ -367,7 +373,7 @@ useEffect(() => {
       <section className="panel">
         <h2>
           <ScanLine size={20} />
-          Histórico de escaneamentos
+          HistÃ³rico de escaneamentos
         </h2>
 
         {scans.length === 0 ? (
@@ -385,7 +391,7 @@ useEffect(() => {
                   <th scope="col">Produto</th>
                   <th scope="col">Data</th>
                   <th scope="col">Resultado</th>
-                  <th scope="col">Ações</th>
+                  <th scope="col">AÃ§Ãµes</th>
                 </tr>
               </thead>
 
@@ -398,7 +404,7 @@ useEffect(() => {
                     <tr key={scan.id}>
                       <td>
                         {scan.nomeProduto ||
-                          "Produto não informado"}
+                          "Produto nÃ£o informado"}
                       </td>
 
                       <td>
@@ -472,7 +478,7 @@ useEffect(() => {
               <p>
                 <strong>Produto:</strong>{" "}
                 {scanSelecionado.nomeProduto ||
-                  "Não informado"}
+                  "NÃ£o informado"}
               </p>
 
               <p>
@@ -488,7 +494,7 @@ useEffect(() => {
               </p>
 
               <div className="scan-modal-section">
-                <h3>Intolerâncias detectadas</h3>
+                <h3>IntolerÃ¢ncias detectadas</h3>
 
                 <p>
                   {formatarItens(
@@ -498,7 +504,7 @@ useEffect(() => {
               </div>
 
               <div className="scan-modal-section">
-                <h3>Alérgenos detectados</h3>
+                <h3>AlÃ©rgenos detectados</h3>
 
                 <p>
                   {formatarItens(
