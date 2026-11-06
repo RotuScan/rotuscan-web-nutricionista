@@ -1,14 +1,14 @@
 
 import { Router } from "express";
 
-import { 
-    listarSolicitacoes,
-    recusarSolicitacao,
-    aprovarSolicitacao,
-    buscarNutricionistaPorCRN,
-    consultarStatusVinculo
+import {
+  listarSolicitacoes,
+  recusarSolicitacao,
+  aprovarSolicitacao,
+  buscarNutricionistaPorCRN,
+  consultarStatusVinculo
 
- } from "../controllers/vinculacaoController.js";
+} from "../controllers/vinculacaoController.js";
 
 import { autenticarPaciente } from "../middlewares/autenticarPaciente.js";
 import { solicitarVinculo } from "../controllers/vinculacaoController.js";
@@ -17,17 +17,13 @@ import { autenticarNutricionista } from "../middlewares/autenticarNutricionista.
 
 const router = Router();
 
-// Consulta por CRN
 router.get(
   "/nutricionista/:crn",
   buscarNutricionistaPorCRN
 );
 
-// Todas as rotas deste arquivo exigem
-// autenticação do nutricionista.
 router.use(autenticarNutricionista);
 
-// Lista solicitações pendentes do nutricionista.
 router.post(
   "/solicitar",
   autenticarPaciente,

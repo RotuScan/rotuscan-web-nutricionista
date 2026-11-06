@@ -37,8 +37,6 @@ const solicitacaoVinculoSchema = new Schema<ISolicitacaoVinculo>(
   }
 );
 
-// Impede solicitações pendentes duplicadas
-// para o mesmo paciente e nutricionista.
 solicitacaoVinculoSchema.index(
   { pacienteId: 1 },
   {

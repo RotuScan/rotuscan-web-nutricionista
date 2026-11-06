@@ -424,22 +424,27 @@ export async function solicitarVinculo(
         },
       },
     });
-  } catch (erro: any) {
-    if (erro?.code === 11000) {
-      res.status(409).json({
-        mensagem: "Já existe uma solicitação pendente para este nutricionista.",
-      });
-      return;
-    }
 
-    console.error("Erro ao solicitar vínculo:", erro);
-
-    res.status(500).json({
-      mensagem: "Erro interno ao solicitar vínculo.",
+} catch (erro: unknown) {
+  if (
+    typeof erro === "object" &&
+    erro !== null &&
+    "code" in erro &&
+    erro.code === 11000
+  ) {
+    res.status(409).json({
+      mensagem: "Já existe uma solicitação pendente para este nutricionista.",
     });
+    return;
   }
-}
 
+  console.error("Erro ao solicitar vínculo:", erro);
+
+  res.status(500).json({
+    mensagem: "Erro interno ao solicitar vínculo.",
+  });
+}
+}
 
 export async function consultarStatusVinculo(
   req: PacienteRequest,
@@ -482,7 +487,6 @@ export async function consultarStatusVinculo(
       .sort({ createdAt: -1 })
       .lean();
 
-    // Um vínculo ativo tem prioridade sobre solicitações antigas.
     if (paciente.nutricionistaId) {
       const nutricionista = await NutricionistaMongo.findById(
         paciente.nutricionistaId

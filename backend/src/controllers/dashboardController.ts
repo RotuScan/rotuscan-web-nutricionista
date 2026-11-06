@@ -29,7 +29,6 @@ export async function obterDashboard(
       return;
     }
 
-    // Apenas pacientes com vínculo ativo e data válida.
     const pacientesEncontrados = await db
       .collection("users")
       .find({
@@ -66,8 +65,6 @@ export async function obterDashboard(
 
     const scansCollection = db.collection("scanlogs");
 
-    // Cada paciente só pode ter scans consultados
-    // a partir da sua própria data de aprovação.
     const filtro = {
       $or: pacientes.map((paciente) => ({
         userId: {

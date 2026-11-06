@@ -297,9 +297,8 @@ export default function Dashboard() {
         ) : (
           <div className="dashboard-chart-scroll">
             <div
-              className={`dashboard-chart-bars ${
-                periodo === 30 ? "period-30" : ""
-              }`}
+              className={`dashboard-chart-bars ${periodo === 30 ? "period-30" : ""
+                }`}
             >
               {grafico.map((item) => {
                 const altura =
@@ -376,13 +375,12 @@ export default function Dashboard() {
               <span>{formatarData(scan.data)}</span>
 
               <span
-                className={`scan-status ${
-                  scan.veredito === "PERIGOSO"
+                className={`scan-status ${scan.veredito === "PERIGOSO"
                     ? "scan-danger"
                     : scan.veredito === "SEGURO"
                       ? "scan-safe"
                       : "scan-unknown"
-                }`}
+                  }`}
               >
                 {scan.veredito === "PERIGOSO"
                   ? "Perigoso"

@@ -101,17 +101,18 @@ export default function Auth() {
 
       navigate("/pacientes", { replace: true });
     } catch (e) {
-  const mensagem =
-    e instanceof Error
-      ? e.message
-      : "Ocorreu um erro inesperado. Tente novamente.";
+      const mensagem =
+        e instanceof Error
+          ? e.message
+          : "Ocorreu um erro inesperado. Tente novamente.";
 
-  setErro(
-    mensagem === "Failed to fetch"
-      ? "Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente."
-      : mensagem
-  );
-    }}
+      setErro(
+        mensagem === "Failed to fetch"
+          ? "Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente."
+          : mensagem
+      );
+    }
+  }
   return (
     <main className="auth-page">
       <div className="shape shape-red" aria-hidden="true" />
@@ -119,14 +120,13 @@ export default function Auth() {
 
       <section className="auth-card">
         <aside className="auth-sidebar">
-          {/* Espaço preparado para a logo oficial */}
           <div className="brand">
-  <img
-    src={logoSimbolo}
-    alt="RotuScan"
-    className="auth-logo"
-  />
-</div>
+            <img
+              src={logoSimbolo}
+              alt="RotuScan"
+              className="auth-logo"
+            />
+          </div>
 
           <div className="sidebar-content">
             <h2>

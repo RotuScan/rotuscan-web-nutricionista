@@ -92,8 +92,6 @@ export async function atualizarMeuPerfil(
       return;
     }
 
-    // Permite contas antigas sem CRN.
-    // Quando informado, exige o formato completo.
     if (
       crnLimpo &&
       (
@@ -109,9 +107,9 @@ export async function atualizarMeuPerfil(
 
     const crnExistente = crnLimpo
       ? await NutricionistaMongo.findOne({
-          crn: crnLimpo,
-          _id: { $ne: id },
-        })
+        crn: crnLimpo,
+        _id: { $ne: id },
+      })
       : null;
 
     if (crnExistente) {
@@ -126,15 +124,14 @@ export async function atualizarMeuPerfil(
       email: emailLimpo,
     };
 
-    // Não salva string vazia como CRN.
     const atualizacao = crnLimpo
       ? {
-          $set: { ...alteracoes, crn: crnLimpo },
-        }
+        $set: { ...alteracoes, crn: crnLimpo },
+      }
       : {
-          $set: alteracoes,
-          $unset: { crn: "" },
-        };
+        $set: alteracoes,
+        $unset: { crn: "" },
+      };
 
     const nutricionista =
       await NutricionistaMongo.findByIdAndUpdate(

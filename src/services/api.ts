@@ -16,13 +16,10 @@ export async function api<T>(
 
   const headers = new Headers(options.headers);
 
-  // Adiciona o token às requisições autenticadas.
   if (token && !headers.has("Authorization")) {
     headers.set("Authorization", `Bearer ${token}`);
   }
 
-  // Define JSON somente quando há um corpo
-  // que não seja FormData.
   if (
     options.body != null &&
     !(options.body instanceof FormData) &&
@@ -81,7 +78,6 @@ export async function api<T>(
       token &&
       !rotaAutenticacao
     ) {
-      // Evita encerrar uma sessão mais recente.
       if (obterSessao()?.token === token) {
         encerrarSessao();
 

@@ -52,8 +52,6 @@ const schema = new Schema<INutricionista>(
   }
 );
 
-// Garante unicidade para CRNs preenchidos.
-// Mantém compatibilidade com contas antigas sem CRN.
 schema.index(
   { crn: 1 },
   {

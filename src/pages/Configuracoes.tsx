@@ -37,8 +37,8 @@ export default function Configuracoes() {
     sessao?.nutricionista.crn ?? ""
   );
   const [crnSalvo, setCrnSalvo] = useState(
-  sessao?.nutricionista.crn ?? ""
-);
+    sessao?.nutricionista.crn ?? ""
+  );
 
   const [mensagem, setMensagem] = useState("");
   const [carregando, setCarregando] = useState(true);
@@ -94,7 +94,7 @@ export default function Configuracoes() {
       setEmail(perfil.email);
       setCrn(perfil.crn ?? "");
       setCrnSalvo(perfil.crn ?? "");
-setCopiado(false);
+      setCopiado(false);
 
       atualizarNutricionistaSessao(perfil);
 
@@ -110,23 +110,23 @@ setCopiado(false);
     }
   }
 
-  
-async function copiarCRN() {
-  if (!crnSalvo.trim() || carregando || salvando) return;
 
-  try {
-    await navigator.clipboard.writeText(crnSalvo.trim());
-    setCopiado(true);
-  } catch {
-    setMensagem("Não foi possível copiar o CRN.");
+  async function copiarCRN() {
+    if (!crnSalvo.trim() || carregando || salvando) return;
+
+    try {
+      await navigator.clipboard.writeText(crnSalvo.trim());
+      setCopiado(true);
+    } catch {
+      setMensagem("Não foi possível copiar o CRN.");
+    }
   }
-}
 
 
   return (
     <div className="settings-page">
       <div className="settings-heading">
-      
+
         <p>
           Gerencie sua conta e suas preferências profissionais.
         </p>
@@ -225,10 +225,10 @@ async function copiarCRN() {
           <span>Seu registro profissional (CRN)</span>
 
           <strong>
-  {carregando
-    ? "Carregando..."
-    : crnSalvo.trim() || "Não cadastrado"}
-</strong>
+            {carregando
+              ? "Carregando..."
+              : crnSalvo.trim() || "Não cadastrado"}
+          </strong>
 
           <button
             type="button"

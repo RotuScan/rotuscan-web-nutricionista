@@ -38,29 +38,29 @@ export async function cadastrarNutricionista(
     }
 
     const nomeLimpo = nome.trim();
-const emailLimpo = email.trim().toLowerCase();
-const crnLimpo = normalizarCRN(crn);
+    const emailLimpo = email.trim().toLowerCase();
+    const crnLimpo = normalizarCRN(crn);
 
-if (!validarNome(nome) || !validarEmail(email)) {
-  res.status(400).json({
-    mensagem: "Nome ou e-mail inválido.",
-  });
-  return;
-}
+    if (!validarNome(nome) || !validarEmail(email)) {
+      res.status(400).json({
+        mensagem: "Nome ou e-mail inválido.",
+      });
+      return;
+    }
 
-if (!validarSenha(senha)) {
-  res.status(400).json({
-    mensagem: "A senha deve ter entre 8 e 72 caracteres.",
-  });
-  return;
-}
+    if (!validarSenha(senha)) {
+      res.status(400).json({
+        mensagem: "A senha deve ter entre 8 e 72 caracteres.",
+      });
+      return;
+    }
 
-if (!validarCRN(crn)) {
-  res.status(400).json({
-    mensagem: "CRN inválido. Exemplo: CRN-3 12345.",
-  });
-  return;
-}
+    if (!validarCRN(crn)) {
+      res.status(400).json({
+        mensagem: "CRN inválido. Exemplo: CRN-3 12345.",
+      });
+      return;
+    }
 
     const emailExistente = await NutricionistaMongo.findOne({
       email: emailLimpo,
@@ -163,18 +163,18 @@ export async function loginNutricionista(
 
     const id = nutricionista._id.toString();
 
-  
-const token = jwt.sign(
-  {
-    id,
-    tipo: "NUTRICIONISTA",
-  },
-  secret,
-  {
-    algorithm: "HS256",
-    expiresIn: "8h",
-  }
-);
+
+    const token = jwt.sign(
+      {
+        id,
+        tipo: "NUTRICIONISTA",
+      },
+      secret,
+      {
+        algorithm: "HS256",
+        expiresIn: "8h",
+      }
+    );
 
 
     res.status(200).json({

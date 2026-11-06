@@ -22,7 +22,7 @@ import {
 
 function formatarItens(itens: unknown): string {
   if (!Array.isArray(itens) || itens.length === 0) {
-    return "NÃ£o informado";
+    return "Não informado";
   }
 
   const nomes = itens
@@ -52,14 +52,14 @@ function formatarItens(itens: unknown): string {
 
   return nomes.length > 0
     ? nomes.join(", ")
-    : "NÃ£o informado";
+    : "Não informado";
 }
 
 function formatarSensibilidade(
   valores: Record<string, unknown> | null | undefined
 ): string {
   if (!valores || typeof valores !== "object") {
-    return "NÃ£o informado";
+    return "Não informado";
   }
 
   const entradas = Object.entries(valores).filter(
@@ -67,27 +67,27 @@ function formatarSensibilidade(
   );
 
   if (entradas.length === 0) {
-    return "NÃ£o informado";
+    return "Não informado";
   }
 
   return entradas
     .map(([restricao, nivel]) => {
       const valor =
         typeof nivel === "string" ||
-        typeof nivel === "number"
+          typeof nivel === "number"
           ? String(nivel)
-          : "NÃ£o informado";
+          : "Não informado";
 
       return `${restricao}: ${valor}`;
     })
-    .join(" â€¢ ");
+    .join(" • ");
 }
 
 function formatarData(data: string): string {
   const dataConvertida = new Date(data);
 
   if (Number.isNaN(dataConvertida.getTime())) {
-    return "Data nÃ£o informada";
+    return "Data não informada";
   }
 
   return dataConvertida.toLocaleString("pt-BR", {
@@ -145,36 +145,36 @@ function ConteudoPerfilPaciente({ id }: { id?: string }) {
 
 
 
-useEffect(() => {
-  let ativo = true;
+  useEffect(() => {
+    let ativo = true;
 
-  if (!id) {
-    return;
-  }
+    if (!id) {
+      return;
+    }
 
-  buscarPacientePorId(id)
-    .then((resposta) => {
-      if (!ativo) return;
+    buscarPacientePorId(id)
+      .then((resposta) => {
+        if (!ativo) return;
 
-      setDados(resposta);
-      setErro("");
-      setCarregando(false);
-    })
-    .catch((error) => {
-      if (!ativo) return;
+        setDados(resposta);
+        setErro("");
+        setCarregando(false);
+      })
+      .catch((error) => {
+        if (!ativo) return;
 
-      setErro(
-        error instanceof Error
-          ? error.message
-          : "Erro ao carregar paciente."
-      );
-      setCarregando(false);
-    });
+        setErro(
+          error instanceof Error
+            ? error.message
+            : "Erro ao carregar paciente."
+        );
+        setCarregando(false);
+      });
 
-  return () => {
-    ativo = false;
-  };
-}, [id]);
+    return () => {
+      ativo = false;
+    };
+  }, [id]);
 
 
 
@@ -259,7 +259,7 @@ useEffect(() => {
     return (
       <div className="page-heading" role="status">
         <h1>Perfil do paciente</h1>
-        <p>Carregando informaÃ§Ãµes...</p>
+        <p>Carregando informações...</p>
       </div>
     );
   }
@@ -273,7 +273,7 @@ useEffect(() => {
 
         <div className="panel">
           <p className="notice" role="alert">
-            {erro || "Paciente nÃ£o encontrado."}
+            {erro || "Paciente não encontrado."}
           </p>
 
           <Link to="/pacientes">
@@ -287,9 +287,7 @@ useEffect(() => {
 
   const { paciente, scans } = dados;
 
-  // O backend retorna um histÃ³rico limitado.
-  // Os indicadores representam os registros carregados.
-  const scansNoHistorico = scans.length;
+   const scansNoHistorico = scans.length;
 
   const totalAlertas = scans.filter(
     (scan) => scan.veredito === "PERIGOSO"
@@ -310,41 +308,41 @@ useEffect(() => {
         <h1>{paciente.nome}</h1>
 
         <p>
-          InformaÃ§Ãµes e histÃ³rico individual do paciente.
+          Informações e histórico individual do paciente.
         </p>
       </div>
 
 
-<section className="panel">
-  <h2>
-    <UsersRound size={20} />
-    Dados do paciente
-  </h2>
+      <section className="panel">
+        <h2>
+          <UsersRound size={20} />
+          Dados do paciente
+        </h2>
 
-  <div className="perfil-paciente-dados">
-    <div className="perfil-paciente-campo">
-      <strong>Nome</strong>
-      <span>{paciente.nome}</span>
-    </div>
+        <div className="perfil-paciente-dados">
+          <div className="perfil-paciente-campo">
+            <strong>Nome</strong>
+            <span>{paciente.nome}</span>
+          </div>
 
-    <div className="perfil-paciente-campo">
-      <strong>E-mail</strong>
-      <span>{paciente.email || "NÃ£o informado"}</span>
-    </div>
+          <div className="perfil-paciente-campo">
+            <strong>E-mail</strong>
+            <span>{paciente.email || "NÃ£o informado"}</span>
+          </div>
 
-    <div className="perfil-paciente-campo">
-      <strong>RestriÃ§Ãµes alimentares</strong>
-      <span>{formatarItens(paciente.restricoes)}</span>
-    </div>
+          <div className="perfil-paciente-campo">
+            <strong>Restrições alimentares</strong>
+            <span>{formatarItens(paciente.restricoes)}</span>
+          </div>
 
-    <div className="perfil-paciente-campo">
-      <strong>NÃ­veis de sensibilidade</strong>
-      <span>
-        {formatarSensibilidade(paciente.niveisSensibilidade)}
-      </span>
-    </div>
-  </div>
-</section>
+          <div className="perfil-paciente-campo">
+            <strong>Ní­veis de sensibilidade</strong>
+            <span>
+              {formatarSensibilidade(paciente.niveisSensibilidade)}
+            </span>
+          </div>
+        </div>
+      </section>
 
 
       <div className="patient-stats">
