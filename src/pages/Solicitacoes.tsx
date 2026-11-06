@@ -42,7 +42,32 @@ export default function Solicitacoes() {
   }
 
   useEffect(() => {
-    void carregarSolicitacoes();
+    let ativo = true;
+
+    buscarSolicitacoes()
+      .then((dados) => {
+        if (ativo) {
+          setSolicitacoes(dados);
+        }
+      })
+      .catch((error: unknown) => {
+        if (ativo) {
+          setErro(
+            error instanceof Error
+              ? error.message
+              : "Erro ao carregar solicitações."
+          );
+        }
+      })
+      .finally(() => {
+        if (ativo) {
+          setCarregando(false);
+        }
+      });
+
+    return () => {
+      ativo = false;
+    };
   }, []);
 
   const listaFiltrada = useMemo(() => {
