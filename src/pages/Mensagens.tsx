@@ -52,10 +52,9 @@ export default function Mensagens() {
   }, []);
 
   useEffect(() => {
-    if (!pacienteSelecionado) {
-      setMensagens([]);
-      return;
-    }
+  if (!pacienteSelecionado) {
+    return;
+  }
 
     const pacienteId = pacienteSelecionado.id;
     let ativo = true;
@@ -83,15 +82,11 @@ export default function Mensagens() {
       }
     }
 
-    setCarregandoMensagens(true);
-    setMensagens([]);
-    setErro("");
+        void carregarMensagens();
 
-    void carregarMensagens();
-
-    const intervalo = window.setInterval(() => {
-      void carregarMensagens();
-    }, 5000);
+        const intervalo = window.setInterval(() => {
+        void carregarMensagens();
+        }, 5000);
 
     return () => {
       ativo = false;
@@ -164,10 +159,14 @@ return (
             <button
               key={paciente.id}
               type="button"
-              onClick={() => setPacienteSelecionado(paciente)}
-              className={`mensagens-paciente ${
-                pacienteSelecionado?.id === paciente.id ? "ativo" : ""
-              }`}
+              onClick={() => {
+                if (pacienteSelecionado?.id === paciente.id) return;
+
+                setMensagens([]);
+                setErro("");
+                setCarregandoMensagens(true);
+                setPacienteSelecionado(paciente);
+                }}
             >
               <div className="mensagens-avatar">
                 <UserRound size={21} />
