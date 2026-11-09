@@ -10,6 +10,7 @@ import nutricionistaRoutes from "./routes/nutricionistaRoutes.js";
 import pacienteRoutes from "./routes/pacienteRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import vinculacaoRoutes from "./routes/vinculacaoRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
 
 
 const app = express();
@@ -34,6 +35,7 @@ app.use("/api/nutricionistas", nutricionistaRoutes);
 app.use("/api/pacientes", pacienteRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/vinculacoes", vinculacaoRoutes);
+app.use("/api/chat", chatRoutes);
 
 app.get("/", (_req, res) => {
   res.json({

@@ -10,6 +10,7 @@ import PerfilPaciente from "./pages/PerfilPaciente";
 import Receitas from "./pages/Receitas";
 import Configuracoes from "./pages/Configuracoes";
 import Solicitacoes from "./pages/Solicitacoes";
+import Mensagens from "./pages/Mensagens";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import NutricionistaLayout from "./components/NutricionistaLayout";
@@ -65,6 +66,8 @@ export default function App() {
           path="/pacientes/:id"
           element={<PerfilPaciente />}
         />
+
+        <Route path="/mensagens" element={<Mensagens />} />
 
         <Route path="/receitas" element={<Receitas />} />
 

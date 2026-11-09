@@ -1,0 +1,244 @@
+
+/* Área principal */
+.mensagens-page {
+  width: 100%;
+  padding: 24px;
+}
+
+.mensagens-page h1 {
+  margin: 0;
+  color: #172b22;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.mensagens-subtitulo {
+  color: #64748b;
+  margin: 6px 0 24px;
+}
+
+/* Estrutura do chat */
+.mensagens-layout {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  height: calc(100vh - 220px);
+  min-height: 550px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.04);
+}
+
+/* Lista de pacientes */
+.mensagens-sidebar {
+  border-right: 1px solid #e2e8f0;
+  overflow-y: auto;
+  background: #fff;
+}
+
+.mensagens-busca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #64748b;
+}
+
+.mensagens-busca input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background: transparent;
+}
+
+.mensagens-paciente {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 15px 18px;
+  border: none;
+  border-bottom: 1px solid #f1f5f9;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mensagens-paciente:hover {
+  background: #f0fdf4;
+}
+
+.mensagens-paciente.ativo {
+  background: #e8f5e9;
+  border-left: 3px solid #16a34a;
+}
+
+.mensagens-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #15803d;
+  flex-shrink: 0;
+}
+
+.mensagens-paciente-nome {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Área da conversa */
+.mensagens-conversa {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.mensagens-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.mensagens-cabecalho strong {
+  display: block;
+  color: #172b22;
+  font-size: 15px;
+}
+
+.mensagens-cabecalho span {
+  display: block;
+  margin-top: 3px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+/* Histórico */
+.mensagens-historico {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 24px 28px;
+  background: #f5f8f6;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Balões */
+.mensagens-balao {
+  width: fit-content;
+  max-width: min(72%, 520px);
+  padding: 11px 15px 8px;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  overflow-wrap: anywhere;
+}
+
+.mensagens-balao.recebida {
+  align-self: flex-start;
+  background: #fff;
+  border-bottom-left-radius: 4px;
+}
+
+.mensagens-balao.enviada {
+  align-self: flex-end;
+  background: #dcfce7;
+  border-bottom-right-radius: 4px;
+}
+
+.mensagens-balao-texto {
+  color: #1e293b;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.mensagens-balao-hora {
+  display: block;
+  margin-top: 5px;
+  text-align: right;
+  color: #64748b;
+  font-size: 10px;
+}
+
+/* Campo de envio */
+.mensagens-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: #fff;
+  border-top: 1px solid #e2e8f0;
+}
+
+.mensagens-input {
+  flex: 1;
+  min-width: 0;
+  padding: 13px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 24px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.mensagens-input:focus {
+  border-color: #16a34a;
+}
+
+.mensagens-enviar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: #16a34a;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mensagens-enviar:hover:not(:disabled) {
+  background: #15803d;
+}
+
+.mensagens-enviar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Telas menores */
+@media (max-width: 768px) {
+  .mensagens-page {
+    padding: 12px;
+  }
+
+  .mensagens-layout {
+    grid-template-columns: 180px minmax(0, 1fr);
+    height: calc(100dvh - 170px);
+    min-height: 400px;
+  }
+
+  .mensagens-historico {
+    padding: 16px;
+  }
+
+  .mensagens-balao {
+    max-width: 90%;
+  }
+}
