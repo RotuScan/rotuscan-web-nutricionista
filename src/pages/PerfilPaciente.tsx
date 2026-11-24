@@ -327,7 +327,7 @@ function ConteudoPerfilPaciente({ id }: { id?: string }) {
 
           <div className="perfil-paciente-campo">
             <strong>E-mail</strong>
-            <span>{paciente.email || "NÃ£o informado"}</span>
+            <span>{paciente.email || "Não informado"}</span>
           </div>
 
           <div className="perfil-paciente-campo">
@@ -349,7 +349,7 @@ function ConteudoPerfilPaciente({ id }: { id?: string }) {
         <div className="patient-stat-card">
           <ScanLine size={22} color="#176b49" />
 
-          <span>Scans no histÃ³rico</span>
+          <span>Scans no histórico</span>
           <strong>{scansNoHistorico}</strong>
         </div>
 
@@ -371,7 +371,7 @@ function ConteudoPerfilPaciente({ id }: { id?: string }) {
       <section className="panel">
         <h2>
           <ScanLine size={20} />
-          HistÃ³rico de escaneamentos
+          Histórico de escaneamentos
         </h2>
 
         {scans.length === 0 ? (
@@ -389,7 +389,7 @@ function ConteudoPerfilPaciente({ id }: { id?: string }) {
                   <th scope="col">Produto</th>
                   <th scope="col">Data</th>
                   <th scope="col">Resultado</th>
-                  <th scope="col">AÃ§Ãµes</th>
+                  <th scope="col">Ações</th>
                 </tr>
               </thead>
 
@@ -402,7 +402,7 @@ function ConteudoPerfilPaciente({ id }: { id?: string }) {
                     <tr key={scan.id}>
                       <td>
                         {scan.nomeProduto ||
-                          "Produto nÃ£o informado"}
+                          "Produto não informado"}
                       </td>
 
                       <td>
@@ -476,7 +476,7 @@ function ConteudoPerfilPaciente({ id }: { id?: string }) {
               <p>
                 <strong>Produto:</strong>{" "}
                 {scanSelecionado.nomeProduto ||
-                  "NÃ£o informado"}
+                  "Não informado"}
               </p>
 
               <p>
@@ -492,7 +492,7 @@ function ConteudoPerfilPaciente({ id }: { id?: string }) {
               </p>
 
               <div className="scan-modal-section">
-                <h3>IntolerÃ¢ncias detectadas</h3>
+                <h3>Intolerâncias detectadas</h3>
 
                 <p>
                   {formatarItens(
@@ -502,7 +502,7 @@ function ConteudoPerfilPaciente({ id }: { id?: string }) {
               </div>
 
               <div className="scan-modal-section">
-                <h3>AlÃ©rgenos detectados</h3>
+                <h3>Alérgenos detectados</h3>
 
                 <p>
                   {formatarItens(
