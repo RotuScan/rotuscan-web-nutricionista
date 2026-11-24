@@ -52,9 +52,9 @@ export default function Mensagens() {
   }, []);
 
   useEffect(() => {
-  if (!pacienteSelecionado) {
-    return;
-  }
+    if (!pacienteSelecionado) {
+      return;
+    }
 
     const pacienteId = pacienteSelecionado.id;
     let ativo = true;
@@ -82,11 +82,11 @@ export default function Mensagens() {
       }
     }
 
-        void carregarMensagens();
+    void carregarMensagens();
 
-        const intervalo = window.setInterval(() => {
-        void carregarMensagens();
-        }, 5000);
+    const intervalo = window.setInterval(() => {
+      void carregarMensagens();
+    }, 5000);
 
     return () => {
       ativo = false;
@@ -126,169 +126,173 @@ export default function Mensagens() {
     paciente.nome.toLowerCase().includes(busca.toLowerCase())
   );
 
-  
-return (
-  <div className="mensagens-page">
-    <div>
-      <h1>Mensagens</h1>
-      <p className="mensagens-subtitulo">
-        Converse com seus pacientes vinculados.
-      </p>
-    </div>
 
-    <div className="mensagens-layout">
-      <aside className="mensagens-sidebar">
-        <div className="mensagens-busca">
-          <Search size={18} />
-          <input
-            value={busca}
-            onChange={(evento) => setBusca(evento.target.value)}
-            placeholder="Buscar paciente..."
-            aria-label="Buscar paciente"
-          />
-        </div>
+  return (
+    <div className="mensagens-page">
+      <div>
+        <h1>Mensagens</h1>
+        <p className="mensagens-subtitulo">
+          Converse com seus pacientes vinculados.
+        </p>
+      </div>
 
-        {carregando ? (
-          <p style={{ padding: 16 }}>Carregando pacientes...</p>
-        ) : pacientesFiltrados.length === 0 ? (
-          <p style={{ padding: 16, color: "#64748b" }}>
-            Nenhum paciente encontrado.
-          </p>
-        ) : (
-          pacientesFiltrados.map((paciente) => (
-            <button
-              key={paciente.id}
-              type="button"
-              onClick={() => {
-                if (pacienteSelecionado?.id === paciente.id) return;
-
-                setMensagens([]);
-                setErro("");
-                setCarregandoMensagens(true);
-                setPacienteSelecionado(paciente);
-                }}
-            >
-              <div className="mensagens-avatar">
-                <UserRound size={21} />
-              </div>
-              <span className="mensagens-paciente-nome">
-                {paciente.nome}
-              </span>
-            </button>
-          ))
-        )}
-      </aside>
-
-      <section className="mensagens-conversa">
-        {!pacienteSelecionado ? (
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "column",
-              color: "#64748b",
-              gap: 12,
-            }}
-          >
-            <MessageCircle size={48} color="#16a34a" />
-            <p>Selecione um paciente para iniciar a conversa.</p>
+      <div className="mensagens-layout">
+        <aside className="mensagens-sidebar">
+          <div className="mensagens-busca">
+            <Search size={18} />
+            <input
+              value={busca}
+              onChange={(evento) => setBusca(evento.target.value)}
+              placeholder="Buscar paciente..."
+              aria-label="Buscar paciente"
+            />
           </div>
-        ) : (
-          <>
-            <header className="mensagens-cabecalho">
-              <div className="mensagens-avatar">
-                <UserRound size={21} />
+
+          {carregando ? (
+            <p style={{ padding: 16 }}>Carregando pacientes...</p>
+          ) : pacientesFiltrados.length === 0 ? (
+            <p style={{ padding: 16, color: "#64748b" }}>
+              Nenhum paciente encontrado.
+            </p>
+          ) : (
+            pacientesFiltrados.map((paciente) => (
+              <button
+                key={paciente.id}
+                type="button"
+                className={`mensagens-paciente ${pacienteSelecionado?.id === paciente.id ? "ativo" : ""
+                  }`}
+                onClick={() => {
+                  if (pacienteSelecionado?.id === paciente.id) return;
+
+                  setMensagens([]);
+                  setErro("");
+                  setCarregandoMensagens(true);
+                  setPacienteSelecionado(paciente);
+                }}
+              >
+                <div className="mensagens-avatar">
+                  <UserRound size={21} />
+                </div>
+
+                <div className="mensagens-paciente-info">
+                  <span className="mensagens-paciente-nome">
+                    {paciente.nome}
+                  </span>
+                </div>
+              </button>
+            ))
+          )}
+        </aside>
+
+        <section className="mensagens-conversa">
+          {!pacienteSelecionado ? (
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+                color: "#64748b",
+                gap: 12,
+              }}
+            >
+              <MessageCircle size={48} color="#16a34a" />
+              <p>Selecione um paciente para iniciar a conversa.</p>
+            </div>
+          ) : (
+            <>
+              <header className="mensagens-cabecalho">
+                <div className="mensagens-avatar">
+                  <UserRound size={21} />
+                </div>
+
+                <div>
+                  <strong>{pacienteSelecionado.nome}</strong>
+                  <span>Conversa com paciente</span>
+                </div>
+              </header>
+
+              <div className="mensagens-historico">
+                {carregandoMensagens && (
+                  <p>Carregando mensagens...</p>
+                )}
+
+                {!carregandoMensagens && mensagens.length === 0 && (
+                  <p style={{ textAlign: "center", color: "#64748b" }}>
+                    Nenhuma mensagem nesta conversa.
+                  </p>
+                )}
+
+                {mensagens.map((mensagem) => {
+                  const minha =
+                    mensagem.remetenteTipo === "NUTRICIONISTA";
+
+                  return (
+                    <div
+                      key={mensagem._id}
+                      className={`mensagens-balao ${minha ? "enviada" : "recebida"
+                        }`}
+                    >
+                      <div className="mensagens-balao-texto">
+                        {mensagem.texto}
+                      </div>
+
+                      <small className="mensagens-balao-hora">
+                        {new Date(
+                          mensagem.createdAt
+                        ).toLocaleTimeString("pt-BR", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </small>
+                    </div>
+                  );
+                })}
+
+                <div ref={fimConversaRef} />
               </div>
 
-              <div>
-                <strong>{pacienteSelecionado.nome}</strong>
-                <span>Conversa com paciente</span>
-              </div>
-            </header>
-
-            <div className="mensagens-historico">
-              {carregandoMensagens && (
-                <p>Carregando mensagens...</p>
-              )}
-
-              {!carregandoMensagens && mensagens.length === 0 && (
-                <p style={{ textAlign: "center", color: "#64748b" }}>
-                  Nenhuma mensagem nesta conversa.
+              {erro && (
+                <p
+                  role="alert"
+                  style={{ padding: "8px 16px", color: "#dc2626" }}
+                >
+                  {erro}
                 </p>
               )}
 
-              {mensagens.map((mensagem) => {
-                const minha =
-                  mensagem.remetenteTipo === "NUTRICIONISTA";
-
-                return (
-                  <div
-                    key={mensagem._id}
-                    className={`mensagens-balao ${
-                      minha ? "enviada" : "recebida"
-                    }`}
-                  >
-                    <div className="mensagens-balao-texto">
-                      {mensagem.texto}
-                    </div>
-
-                    <small className="mensagens-balao-hora">
-                      {new Date(
-                        mensagem.createdAt
-                      ).toLocaleTimeString("pt-BR", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </small>
-                  </div>
-                );
-              })}
-
-              <div ref={fimConversaRef} />
-            </div>
-
-            {erro && (
-              <p
-                role="alert"
-                style={{ padding: "8px 16px", color: "#dc2626" }}
+              <form
+                onSubmit={enviarMensagem}
+                className="mensagens-form"
               >
-                {erro}
-              </p>
-            )}
+                <input
+                  value={texto}
+                  onChange={(evento) => setTexto(evento.target.value)}
+                  placeholder="Digite sua mensagem..."
+                  maxLength={2000}
+                  aria-label="Mensagem"
+                  className="mensagens-input"
+                />
 
-            <form
-              onSubmit={enviarMensagem}
-              className="mensagens-form"
-            >
-              <input
-                value={texto}
-                onChange={(evento) => setTexto(evento.target.value)}
-                placeholder="Digite sua mensagem..."
-                maxLength={2000}
-                aria-label="Mensagem"
-                className="mensagens-input"
-              />
-
-              <button
-                type="submit"
-                disabled={enviando || !texto.trim()}
-                className="mensagens-enviar"
-                aria-label="Enviar mensagem"
-              >
-                {enviando ? (
-                  <LoaderCircle size={20} />
-                ) : (
-                  <Send size={20} />
-                )}
-              </button>
-            </form>
-          </>
-        )}
-      </section>
+                <button
+                  type="submit"
+                  disabled={enviando || !texto.trim()}
+                  className="mensagens-enviar"
+                  aria-label="Enviar mensagem"
+                >
+                  {enviando ? (
+                    <LoaderCircle size={20} />
+                  ) : (
+                    <Send size={20} />
+                  )}
+                </button>
+              </form>
+            </>
+          )}
+        </section>
+      </div>
     </div>
-  </div>
-);
+  );
 
 }
